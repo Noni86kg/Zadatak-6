@@ -5,9 +5,6 @@ const btnTurq2 = document.querySelector(".btn-turq2");
 const bambooStand = document.querySelector(".bamboo-stand");
 const btnTurq3 = document.querySelector(".btn-turq3");
 const blackEdition = document.querySelector(".black-edition");
-const btnModal1 = document.querySelector(".btn-modal1");
-const btnModal2 = document.querySelector(".btn-modal2");
-const btnModal3 = document.querySelector(".btn-modal3");
 const smallModalClose = document.querySelector(".small-modal-close");
 const bookmarText = document.querySelector(".btn-bookmark p");
 const btnClose = document.getElementById("close-modal-img");
@@ -22,9 +19,8 @@ const navMob = document.querySelector(".nav-mob");
 const hamburgerBtn = document.querySelector(".hamburger");
 const backedMoney = document.querySelector(".backed-money");
 const totalBackers = document.querySelector(".total-backers");
-const bill1 = document.querySelector(".bill1");
-const bill2 = document.querySelector(".bill2");
-const bill3 = document.querySelector(".bill3");
+const btnModals = document.querySelectorAll(".btn-modal");
+const bills = document.querySelectorAll(".bill")
 const numLeft1 = document.querySelector(".num-left1");
 const numLeft2 = document.querySelector(".num-left2");
 const cardsTopNumLeft1 = document.querySelector(".cards-top-right-top1");
@@ -33,15 +29,10 @@ const cardsTopRightDown1 = document.querySelector(".cards-top-right-down1");
 const cardsTopRightDown2 = document.querySelector(".cards-top-right-down2");
 
 
-
-
 // esc close
 document.addEventListener('keydown', function (e) {
 
     if  (e.key === 'Escape' && !smallModal.classList.contains('hidden')) {
-        closeSmallModal();
-    }
-    else if (e.key === 'Enter' && !smallModal.classList.contains('hidden')) {
         closeSmallModal();
     }
     else if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
@@ -75,11 +66,14 @@ const closeSmallModal = function () {
 };
 
 smallOverlay.addEventListener('click', function(e) {
+
     if(e.target === smallOverlay) {
         closeSmallModal();
     }
+    if(e.target === smallModalClose) {
+        closeSmallModal();
+    }
 });
-smallModalClose.addEventListener('click', closeSmallModal);
 
 //Open close modal
 const openModal = function () {
@@ -122,7 +116,7 @@ overlay.addEventListener('click', function(e) {
     }
 });
 
-//Open hidden massage
+//hidden bottom modal card
 cardsTopLeftBTN.forEach((button) => {
     button.addEventListener('click', (e) => {
         const cliced = e.target.closest('.cards-top-left');
@@ -146,116 +140,65 @@ cardsTopLeftBTN.forEach((button) => {
 })
 
 // calculator 
-function calc1() {
+let bill;
+let dataId;
+let topRightText;
+function calc(bill, dataId) {
     let sum = backedMoney.textContent.slice(1, backedMoney.length);
     sum=parseInt(sum.replace(/\,/g,''));
     let backers = parseInt(totalBackers.textContent.replace(/\,/g,''));
-    const bill = parseInt(bill1.value);
-    openSmallModal();
     sum += bill;
     sum = sum.toLocaleString("en-US");
     backedMoney.textContent = `$ ${sum}`
     backers += 1;
     backers = backers.toLocaleString("en-US");
     totalBackers.textContent = backers;
-    console.log(sum, typeof sum)
-}
-
-bill1.addEventListener("click", function() {
-    bill1.addEventListener('keydown', (event) => {
-
-        if ( event.key === "Enter" && bill1.value !== '') {
-            calc1()
-        }
-    })
-  })
-
-btnModal1.addEventListener('click', () => {
-    if (bill1.value !== '') {
-        calc1()
-    }
-} );
-
-function calc2() {
-    let sum = backedMoney.textContent.slice(1, backedMoney.length);
-    sum=parseInt(sum.replace(/\,/g,''));
-    let backers = parseInt(totalBackers.textContent.replace(/\,/g,''));
-    const bill = parseInt(bill2.value);
     openSmallModal();
-    sum += bill;
-    sum = sum.toLocaleString("en-US");
-    backedMoney.textContent = `$ ${sum}`
-    backers += 1;
-    backers = backers.toLocaleString("en-US");
-    totalBackers.textContent = backers;
-
-    let numLeft11 = numLeft1.textContent
-    numLeft11 = numLeft11.slice( 0 , numLeft11.length-4)
-    numLeft11 -= 1;
-    numLeft1.innerHTML = `<h2 class="num-left1" >${numLeft11}<span>left</span></h2>`
-
-    cardsTopNumLeft1.innerHTML = `<h4>${numLeft11}</h4><p>left</p>`
-
-    cardsTopRightDown1.innerHTML = `
-    <h4>${numLeft11}</h4>
-    <p>left</p>
-    `
+    switch(dataId) {
+        case 0:
+            break;
+        case 24:
+            topRightText = cardsTopNumLeft1.textContent;
+            topRightText = topRightText.slice( 0 , topRightText.length-4)
+            topRightText -=1;
+            cardsTopNumLeft1.innerHTML = `<h4>${topRightText}</h4><p>left</p>`
+            cardsTopRightDown1.innerHTML = `<h4>${topRightText}</h4><p>left</p>`
+            numLeft1.innerHTML = `${topRightText}<span>left</span>`
+            break;
+        case 74:
+            topRightText = cardsTopNumLeft2.textContent;
+            topRightText = topRightText.slice( 0 , topRightText.length-4)
+            topRightText -=1;
+            cardsTopNumLeft2.innerHTML = `<h4>${topRightText}</h4><p>left</p>`
+            cardsTopRightDown2.innerHTML = `<h4>${topRightText}</h4><p>left</p>`
+            numLeft2.innerHTML = `${topRightText}<span>left</span>`
+            break;
+    }
 }
+btnModals.forEach((btnModal) => {
+    btnModal.addEventListener('click', (e) => {
+        bill = parseInt(e.target.parentElement.children[1].value);
+        dataId = parseInt(e.target.parentElement.children[1].getAttribute('data-id'));
 
-bill2.addEventListener("click", function() {
-    bill2.addEventListener('keydown', (event) => {
-
-        if ( event.key === "Enter" && bill2.value !== '' && bill2.value >= "25" ) {
-            calc2()
+        if (!isNaN(bill) && bill > dataId) {
+            calc(bill, dataId)
         }
     })
-  })
+})
 
-btnModal2.addEventListener('click', () => {
-    if (bill2.value !== '' && bill2.value >= "25" ) {
-        calc2()
+document.addEventListener('keydown', (e) => {
+    if ( e.key === "Enter") {
+        bills.forEach((billValue) => {
+            if (billValue === document.activeElement) {
+                bill = parseInt(billValue.value)
+                dataId = parseInt(billValue.getAttribute('data-id'))
+                if (!isNaN(bill) && bill > dataId) {
+                    calc(bill, dataId)
+                }
+            }
+        })
     }
-} );
-
-function calc3() {
-    let sum = backedMoney.textContent.slice(1, backedMoney.length);
-    sum=parseInt(sum.replace(/\,/g,''));
-    let backers = parseInt(totalBackers.textContent.replace(/\,/g,''));
-    const bill = parseInt(bill3.value);
-    openSmallModal();
-    sum += bill;
-    sum = sum.toLocaleString("en-US");
-    backedMoney.textContent = `$ ${sum}`
-    backers += 1;
-    backers = backers.toLocaleString("en-US");
-    totalBackers.textContent = backers;
-
-    let numLeft22 = numLeft2.textContent
-    numLeft22 = numLeft22.slice( 0 , numLeft22.length-4)
-    numLeft22 -= 1;
-    numLeft2.innerHTML = `<h2 class="num-left1" >${numLeft22}<span>left</span></h2>`;
-    cardsTopNumLeft2.innerHTML = `<div class="cards-top-right"><h4>${numLeft22}</h4><p>left</p></div>`;
-
-    cardsTopRightDown2.innerHTML = `
-    <h4>${numLeft22}</h4>
-    <p>left</p>
-    `
-}
-
-bill3.addEventListener("click", function() {
-    bill3.addEventListener('keydown', (event) => {
-
-        if ( event.key === "Enter" && bill3.value !== '' && bill3.value >= "75" ) {
-            calc3()
-        }
-    })
-  })
-
-btnModal3.addEventListener('click', () => {
-    if (bill3.value !== '' && bill3.value >= "75" ) {
-        calc3()
-    }
-} );
+})
 
 // Bookmark/Bookmarked
 btnBookmark.addEventListener('click', () => {
@@ -266,5 +209,4 @@ btnBookmark.addEventListener('click', () => {
     } else {
         bookmarText.textContent = "Bookmark"
     }
-
 })
